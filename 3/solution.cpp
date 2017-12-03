@@ -17,6 +17,41 @@ Direction operator++(Direction& dir,int) {
   ++dir;
   return temp;
 }
+ostream& operator<<(ostream & os, Direction & dir) {
+  if (dir == R) os << "R";
+  else if (dir == U) os << "U";
+  else if (dir == L) os << "L";
+  else os << "D"; // (dir == D)
+  return  os;
+}
+
+
+
+/*
+
+
+  First box:
+
+  4 3  (0:1)(1:1)
+  1 2  (0:0)(1:0)
+
+  Second box:
+  5 4 3   (-1:1)(0:1)(1:1)
+  6 1 2   (-1:0)(0:0)(1:0)
+
+  Third box:
+  5 4 3  (-1: 1)(0: 1)(1: 1)
+  6 1 2  (-1: 0)(0: 0)(1: 0)
+  7 8 9  (-1:-1)(0:-1)(1:-1)
+
+  Fourth box:
+  5 4 3 12 (-1: 1)(0: 1)(1: 1)(2: 1)
+  6 1 2 11 (-1: 0)(0: 0)(1: 0)(2: 0)
+  7 8 9 10 (-1:-1)(0:-1)(1:-1)(2:-1)
+
+  and so forth
+ */
+
 
 class Grid {
 public:
@@ -41,25 +76,26 @@ public:
          << endl;
   }
 
-  void widen(pair<int,int> const& point, Direction const& d) {
+  bool widen(pair<int,int> const& point, Direction const& d) {
+    bool widens{false};
     if (point == top_left && d == L ) {
       --top_left.first;
       --bottom_left.first;
-      cout << "widens!" << endl;
+      widens = true;
     } else if (point == bottom_left && d == D ) {
       --bottom_left.second;
       --bottom_right.second;
-      cout << "widens!" << endl;
+      widens = true;
     } else if (point == bottom_right && d == R ) {
       ++bottom_right.first;
       ++top_right.first;
-      cout << "widens!" << endl;
+      widens = true;
     } else if (point == top_right && d == U ){
       ++top_right.second;
       ++top_left.second;
-      cout << "widens!" << endl;
+      widens = true;
     }
-    print();
+    return widens;
   }
 
 private:
@@ -69,16 +105,21 @@ private:
   pair<int,int> top_right;
 };
 
-void print(pair<int,int> const& point, Direction const& d) {
+void print(pair<int,int> const& point, Direction & d) {
   cout << "(" << point.first << ":" << point.second << ")" << " " << d << endl;
 }
 
-int main() {
+int main(int argc,char *argv[]) {
   Grid grid;
   pair<int,int> pos{0,1};
   unsigned current{4};
   unsigned goal{0};
-  cin >> goal;
+  if (argc == 2) {
+    goal = stoi(argv[1]);
+  } else {
+    cout << "Please enter the goal: ";
+    cin >> goal;
+  }
 
   // The first cases!
   if (goal == 1) {
@@ -94,19 +135,9 @@ int main() {
 
   Direction d{L};
   while (current != goal && ++current) {
-    print(pos,d);
+    bool turn{false};
     if (grid.at_corner(pos)) {
-      grid.widen(pos,d);
-      if (d == R) {
-        ++pos.first;
-      } else if (d == U) {
-        ++pos.second;
-      } else if (d == L) {
-        --pos.first;
-      } else { // (d == D)
-        --pos.second;
-      }
-      d++;
+      turn = grid.widen(pos,d);
     }
     if (d == R) {
       ++pos.first;
@@ -117,6 +148,7 @@ int main() {
     } else { // (d == D)
       --pos.second;
     }
+    if (turn) d++;
   }
   cout << "Final position" << endl;
   print(pos,d);
