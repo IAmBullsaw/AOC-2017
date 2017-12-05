@@ -148,14 +148,14 @@ void solution1(unsigned const& goal) {
 
 class Score_grid {
 public:
-  Score_grid(unsigned long x,unsigned long y):grid{x,vector<int>(y)} {}
+  Score_grid(unsigned long x,unsigned long y):grid{x,vector<int>(y)},translatorx{x/2},translatory{y/2} {}
 
   int tranx(int const& x) const {
-    return x+50;
+    return translatorx + x;
   }
 
   int trany(int const& y) const {
-    return y+50;
+    return translatory + y;
   }
 
   void set(int const& x, int const& y, unsigned const& score) {
@@ -210,10 +210,9 @@ public:
   }
 
   void print() {
-    cout << "remember: grid is reversed ie X == Y, Y==X ..." << endl;
     unsigned w = to_string(get()).length();
-    for (auto v: grid) { // x
-      for (auto n: v) { // y
+    for (auto v: grid) {
+      for (auto n: v) {
         cout << setw(w) << n << " ";
       }
       cout << endl;
@@ -222,12 +221,13 @@ public:
 
 private:
   vector<vector<int>> grid;
+  long unsigned translatorx;
+  long unsigned translatory;
 };
 
 void solution2(unsigned const& goal) {
   Grid grid;
   pair<int,int> pos{0,1}; // start at 4
-  unsigned current{4};
   Score_grid scores{100,100};
 
   scores.set(0,0,4);
@@ -270,6 +270,7 @@ void solution2(unsigned const& goal) {
     scores.set(0,0,scores.get());
     if (turn) d++;
   }
+  // scores.print();
   cout << "Result is " << scores.get() << endl;
 }
 
@@ -281,53 +282,6 @@ int main(int argc,char *argv[]) {
     cout << "Please enter the goal: ";
     cin >> goal;
   }
-  /*
-  Score_grid grid{5,5};
-
-  grid.set(0,1,1);
-  grid.set(0,2,1);
-  grid.set(0,-1,1);
-  grid.set(0,-2,1);
-
-  grid.set(1,0,1);
-  grid.set(1,1,1);
-  grid.set(1,2,1);
-  grid.set(1,-1,1);
-  grid.set(1,-2,1);
-
-  grid.set(2,0,1);
-  grid.set(2,1,1);
-  grid.set(2,2,1);
-  grid.set(2,-1,1);
-  grid.set(2,-2,1);
-
-  grid.set(-1,0,1);
-  grid.set(-1,1,1);
-  grid.set(-1,2,1);
-  grid.set(-1,-1,1);
-  grid.set(-1,-2,1);
-
-  grid.set(-2,0,1);
-  grid.set(-2,1,1);
-  grid.set(-2,2,1);
-  grid.set(-2,-1,1);
-  grid.set(-2,-2,1);
-
-
-  grid.print();
-  cout << "Right"<< endl;
-  grid.move(Direction::R);
-  grid.print();
-  cout << "Left"<< endl;
-  grid.move(Direction::L);
-  grid.print();
-  cout << "Up"<< endl;
-  grid.move(Direction::U);
-  grid.print();
-  cout << "Down"<< endl;
-  grid.move(Direction::D);
-  grid.print();
-  cout << "points in middle: " << grid.get() << endl;*/
   solution2(goal);
   return 0;
 }
