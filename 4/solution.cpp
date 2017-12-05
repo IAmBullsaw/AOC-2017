@@ -5,27 +5,28 @@
 #include <iterator>
 using namespace std;
 
-int main() {
+
+int puzzle1() {
   string line{""};
   int result{0};
   while(getline(cin,line)) {
     istringstream iss{line};
     vector<string> tokens{istream_iterator<string>{iss},
-                                                    istream_iterator<string>{}};
+        istream_iterator<string>{}};
     bool approved{true};
     set<string> set;
     for (string token: tokens){
-      auto p = set.insert(token);
-      approved = p.second;
-      if (!approved) {
+      if(auto [it, approved] = set.insert(token); !approved)
         break;
-      }
     }
     if (approved) {
       ++result;
     }
   }
+  return result;
+}
 
-  cout << "Result is: " << result << endl;
+int main() {
+  cout << "Result is: " << puzzle1() << endl;
   return 0;
 }
