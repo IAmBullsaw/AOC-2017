@@ -1,6 +1,7 @@
 #include <iostream>
 #include <utility>
 #include <algorithm>
+#include <iomanip>
 using namespace std;
 
 enum Direction{R,U,L,D};
@@ -25,10 +26,7 @@ ostream& operator<<(ostream & os, Direction & dir) {
   return  os;
 }
 
-
-
 /*
-
 
   First box:
 
@@ -109,28 +107,21 @@ void print(pair<int,int> const& point, Direction & d) {
   cout << "(" << point.first << ":" << point.second << ")" << " " << d << endl;
 }
 
-int main(int argc,char *argv[]) {
+void solution1(unsigned const& goal) {
   Grid grid;
   pair<int,int> pos{0,1};
   unsigned current{4};
-  unsigned goal{0};
-  if (argc == 2) {
-    goal = stoi(argv[1]);
-  } else {
-    cout << "Please enter the goal: ";
-    cin >> goal;
-  }
 
   // The first cases!
   if (goal == 1) {
     cout << "Result is " << 0 << endl;
-    return 0;
+    return;
   } else if (goal == 2 || goal == 4) {
     cout << "Result is " << 1 << endl;
-    return 0;
+    return;
   } else if (goal == 3) {
     cout << "Result is " << 2 << endl;
-    return 0;
+    return;
   }
 
   Direction d{L};
@@ -153,5 +144,190 @@ int main(int argc,char *argv[]) {
   cout << "Final position" << endl;
   print(pos,d);
   cout << "Result is " << abs(pos.first) + abs(pos.second) << endl;
+}
+
+class Score_grid {
+public:
+  Score_grid(unsigned long x,unsigned long y):grid{x,vector<int>(y)} {}
+
+  int tranx(int const& x) const {
+    return x+50;
+  }
+
+  int trany(int const& y) const {
+    return y+50;
+  }
+
+  void set(int const& x, int const& y, unsigned const& score) {
+    grid.at(tranx(x)).at(trany(y)) = score;
+  }
+
+  unsigned get() {
+    unsigned sum{};
+
+    /*
+      (-1, 1)(0, 1)(1, 1)
+      (-1, 0)      (1, 0)
+      (-1,-1)(0,-1)(1,-1)
+     */
+
+    sum += get(-1,1);
+    sum += get(0,1);
+    sum += get(1,1);
+
+    sum += get(-1,0);
+    sum += get(1,0);
+
+    sum += get(-1,-1);
+    sum += get(0,-1);
+    sum += get(1,-1);
+
+    return sum;
+  }
+
+  unsigned get(int const& x, int const& y) const {
+    return grid.at(tranx(x)).at(trany(y));
+  }
+
+  void move(Direction const& d) {
+    if (d == Direction::R) {
+      for (vector<int> & v: grid) {
+        rotate(v.begin(), v.begin()+1,v.end());
+        v.back() = 0;
+      }
+    } else if (d == Direction::L) {
+      for (vector<int> & v: grid) {
+        rotate(v.begin(), v.end()-1,v.end());
+        v.front() = 0;
+      }
+    } else if (d == Direction::D) {
+      rotate(grid.begin(), grid.begin()+1, grid.end());
+      for_each(grid.back().begin(), grid.back().end(), [](int & n){ n = 0;});
+    } else if (d == Direction::U) {
+      rotate(grid.begin(), grid.end()-1, grid.end());
+      for_each(grid.front().begin(), grid.front().end(), [](int & n){ n = 0;});
+    }
+  }
+
+  void print() {
+    cout << "remember: grid is reversed ie X == Y, Y==X ..." << endl;
+    unsigned w = to_string(get()).length();
+    for (auto v: grid) { // x
+      for (auto n: v) { // y
+        cout << setw(w) << n << " ";
+      }
+      cout << endl;
+    }
+  }
+
+private:
+  vector<vector<int>> grid;
+};
+
+void solution2(unsigned const& goal) {
+  Grid grid;
+  pair<int,int> pos{0,1}; // start at 4
+  unsigned current{4};
+  Score_grid scores{100,100};
+
+  scores.set(0,0,4);
+  scores.set(1,0,1);
+  scores.set(1,1,1);
+  scores.set(0,1,2);
+
+  // The first cases!
+  if (goal == 1) {
+    cout << "Result is " << 1 << endl;
+    return;
+  } else if (goal == 2 ) {
+    cout << "Result is " << 1 << endl;
+    return;
+  } else if (goal == 3) {
+    cout << "Result is " << 2 << endl;
+    return;
+  } else if (goal == 4) {
+    cout << "Result is " << goal << endl;
+    return;
+  }
+
+  Direction d{L};
+  while (goal > scores.get()-1) {
+    bool turn{false};
+    if (grid.at_corner(pos)) {
+      turn = grid.widen(pos,d);
+    }
+    if (d == R) {
+      ++pos.first;
+    } else if (d == U) {
+      ++pos.second;
+    } else if (d == L) {
+      --pos.first;
+    } else { // (d == D)
+      --pos.second;
+    }
+
+    scores.move(d);
+    scores.set(0,0,scores.get());
+    if (turn) d++;
+  }
+  cout << "Result is " << scores.get() << endl;
+}
+
+int main(int argc,char *argv[]) {
+  unsigned goal{0};
+  if (argc == 2) {
+    goal = stoi(argv[1]);
+  } else {
+    cout << "Please enter the goal: ";
+    cin >> goal;
+  }
+  /*
+  Score_grid grid{5,5};
+
+  grid.set(0,1,1);
+  grid.set(0,2,1);
+  grid.set(0,-1,1);
+  grid.set(0,-2,1);
+
+  grid.set(1,0,1);
+  grid.set(1,1,1);
+  grid.set(1,2,1);
+  grid.set(1,-1,1);
+  grid.set(1,-2,1);
+
+  grid.set(2,0,1);
+  grid.set(2,1,1);
+  grid.set(2,2,1);
+  grid.set(2,-1,1);
+  grid.set(2,-2,1);
+
+  grid.set(-1,0,1);
+  grid.set(-1,1,1);
+  grid.set(-1,2,1);
+  grid.set(-1,-1,1);
+  grid.set(-1,-2,1);
+
+  grid.set(-2,0,1);
+  grid.set(-2,1,1);
+  grid.set(-2,2,1);
+  grid.set(-2,-1,1);
+  grid.set(-2,-2,1);
+
+
+  grid.print();
+  cout << "Right"<< endl;
+  grid.move(Direction::R);
+  grid.print();
+  cout << "Left"<< endl;
+  grid.move(Direction::L);
+  grid.print();
+  cout << "Up"<< endl;
+  grid.move(Direction::U);
+  grid.print();
+  cout << "Down"<< endl;
+  grid.move(Direction::D);
+  grid.print();
+  cout << "points in middle: " << grid.get() << endl;*/
+  solution2(goal);
   return 0;
 }
