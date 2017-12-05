@@ -4,21 +4,43 @@
 #include <vector>
 using namespace std;
 
-int main(int argc, char* argv[]) {
-  long number{0};
+void solution1() {
   vector<long> instructions;
-
   copy(istream_iterator<int>(cin),istream_iterator<int>(),back_inserter(instructions));
 
   int i{0};
-  int steps{0};
-  while (i++; steps++) {
+  int jumps{0};
+  bool done{false};
+  while (!done) {
     try {
-      i += instructions.at(i)++ - 1;
+      i += instructions.at(i)++;
     } catch (...) {
-      cout << "We crasched in " << steps << endl;
+      cout << "We crasched in " << jumps << " jumps ... Great code!" << endl;
+      done=true;
     }
-    cout << i << endl;
+    ++jumps;
   }
+}
+
+void solution2() {
+  vector<long> instructions;
+  copy(istream_iterator<int>(cin),istream_iterator<int>(),back_inserter(instructions));
+
+  int i{0};
+  int jumps{0};
+  bool done{false};
+  while (!done) {
+    try {
+      i += instructions.at(i) > 2 ? instructions.at(i)-- : instructions.at(i)++;
+    } catch (...) {
+      cout << "We crasched in " << jumps << " jumps ... Great code!" << endl;
+      done=true;
+    }
+    ++jumps;
+  }
+}
+
+int main() {
+  solution2();
   return 0;
 }
