@@ -1,7 +1,8 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-#include <map>
+#include <vector>
+#include <algorithm>
 using namespace std;
 
 struct Connection {
@@ -12,30 +13,40 @@ struct Connection {
 
 
 void solution1() {
-  map<string,pair<int,string>> program{};
+  vector<string> parents{};
+  vector<string> children{};
   string line;
   while (getline(cin,line)) {
     istringstream iss{line};
     string name;
     string weight_s;
-    iss >> name >> weight_s;
-    int weight = stoi(weight_s.substr(1, weight_s.size() - 2 ));
-    pair<int,string> p = make_pair(weight, "");
-    pair<string,pair<int,string>> e = make_pair(name,p);
-    auto ret = program.insert(e);
-    if (!ret.second) {
-      cout << "Already existed" << endl;
-    }
     string arrow;
-    iss >> arrow;
+    iss >> name >> weight_s >> arrow;
     if (!arrow.empty()) {
       string child;
+      parents.push_back(name);
       while (iss >> child) {
-        program.at(child).second = name;
+        if (child.back() == ',') { child = child.substr(0, child.size() - 1);}
+        children.push_back(child);
       }
     }
-    cout << name << weight << arrow << endl;
   }
+  cout << "Parents: " ;
+  for (string p: parents) cout << p << " ";
+  cout << endl;
+  cout << "Children: " ;
+  for (string c: children) cout << c << " ";
+  cout << endl;
+  vector<string> difference{parents.size()+children.size()};
+  sort(parents.begin(), parents.end());
+  sort(children.begin(), children.end());
+  auto it = set_difference(parents.begin(),parents.end(),children.begin(),children.end(),difference.begin());
+  difference.resize(it-difference.begin());
+
+  cout << "Difference: ";
+  for (string d: difference) cout << d << " ";
+  cout << endl;
+
 }
 
 int main() {
