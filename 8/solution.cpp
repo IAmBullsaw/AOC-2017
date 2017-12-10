@@ -56,6 +56,7 @@ int main() {
     instructions.push_back(i);
   }
 
+  int largest{0}; // for sol2
   for (Instruction & i: instructions) {
     if (check(registers.at(i.other),i.comp,i.val)) {
       if (i.action == "inc") {
@@ -63,6 +64,7 @@ int main() {
       } else  {
         registers.at(i.name) -= i.amount;
       }
+      if (largest < registers.at(i.name)) largest = registers.at(i.name);
     }
   }
 
@@ -71,6 +73,8 @@ int main() {
       return a.second < b.second;
     })->second
        << endl;
+
+  cout << "Largest ever:" << largest << endl;
 
   return 0;
 }
