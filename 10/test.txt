@@ -1,1 +1,1 @@
-ne,ne,s,s
+n,n,n,n,n,se

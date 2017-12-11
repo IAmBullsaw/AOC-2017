@@ -3,19 +3,38 @@
 #include <algorithm>
 using namespace std;
 
-int main() {
-  string line;
-  pair<int,int> pos{0,0};
-  while (getline(cin,line,',')) {
-    cout << "Line: " << line << endl;
-    for (char & c: line) {
-      if (c =='n') pos.second += 1;
-      else if (c =='s') pos.second -= 1;
-      else if (c =='e') pos.first += 1;
-      else if (c =='w') pos.first -= 1;
-    }
+struct Coordinate {
+  Coordinate(int x,int y, int z)
+    :x{x},y{y},z{z}
+  {}
+  int x;
+  int y;
+  int z;
+
+  int distance() const {
+    return max(abs(x), max(abs(y),abs(z)));
   }
-  cout << "Pos: " << pos.first << " " << pos.second << endl;
-  cout << "Diagonal: " << sqrt(pos.first^2 + pos.second^2) << endl;
+};
+
+int main() {
+  string dir;
+  Coordinate pos{0,0,0};
+  int maxdist{0};
+  while (getline(cin,dir,',')) {
+    cout << "Line: " << dir << endl;
+    if (dir == "n") { ++pos.x; --pos.z; }
+    else if (dir == "s") { --pos.x; ++pos.z; }
+    else if (dir == "nw") { ++pos.y; --pos.z; }
+    else if (dir == "ne") { ++pos.x; --pos.y; }
+    else if (dir == "sw") { --pos.x; ++pos.y; }
+    else if (dir == "se") { --pos.y; ++pos.z; }
+    else { cout << "Missed something: " << dir << endl;}
+
+    if (pos.distance() > maxdist) maxdist = pos.distance();
+
+  }
+  cout << "Pos: " << pos.x << " " << pos.y << " " << pos.z << endl;
+  cout << "Distance: " << pos.distance() << endl;
+  cout << "Has anyone really been far even as decided to use even go want to do look more like: " << maxdist << endl;
   return 0;
 }
