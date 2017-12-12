@@ -72,16 +72,13 @@ int main() {
   }
   vector<int> zero_group{};
   for (auto v: groups) {
-    cout << "g: ";
     for (auto n: v) {
-      cout << n << " ";
       if ( n == 0) {
         zero_group = v;
       }
     }
-    cout << endl;
   }
   cout << "Size: " << zero_group.size() << endl;
-
+  cout << "Groups: " << groups.size() << endl;
   return 0;
 }
