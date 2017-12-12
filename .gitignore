@@ -30,6 +30,19 @@
 *.exe
 *.out
 *.app
+# New executeable name
+day*
 
 # Emacs, I added flycheck for c++17
 .dir-locals.el
+
+# Cmake
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
