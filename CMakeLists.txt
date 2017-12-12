@@ -1,8 +1,13 @@
 cmake_minimum_required(VERSION 3.9.6)
 project(aoc)
+
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_COMPILER clang++-4.0)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
 add_compile_options(-Wall -Wextra -Wpedantic)
+
 add_executable(day1 1/solution.cpp)
 add_executable(day2 2/solution.cpp)
 add_executable(day3 3/solution.cpp)
