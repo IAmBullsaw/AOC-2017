@@ -87,6 +87,7 @@ int main() {
 
   int delay{0};
   while (!is_an_undecteded_walk(firewall, delay)) {
+    if (0 == delay % 100) cout << "delay: " << delay << endl;
     ++delay;
   }
   cout << "Undetected walk after delay: " << delay << endl;
