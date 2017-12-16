@@ -68,9 +68,17 @@ public:
   }
 
   void hashify() {
+    sparse_tie();
     for (int i{0}; i < 256; i+=16) {
-      int res = list.at(i) ^ list.at(i+1) ^ list.at(i+2) ^ list.at(i+3) ^ list.at(i+4) ^ list.at(i+5) ^ list.at(i+6) ^ list.at(i+7) ^ list.at(i+8) ^ list.at(i+9) ^ list.at(i+10) ^ list.at(i+11) ^ list.at(i+12) ^ list.at(i+13) ^ list.at(i+14) ^ list.at(i+15);
-      cout << hex << res << dec;
+      int res =
+        list.at(i) ^ list.at(i+1) ^ list.at(i+2) ^ list.at(i+3) ^
+        list.at(i+4) ^ list.at(i+5) ^ list.at(i+6) ^ list.at(i+7) ^
+        list.at(i+8) ^ list.at(i+9) ^ list.at(i+10) ^ list.at(i+11) ^
+        list.at(i+12) ^ list.at(i+13) ^ list.at(i+14) ^ list.at(i+15);
+      if (res < 16) {
+        cout << 0 << hex << res << dec;
+      } else
+        cout << hex << res << dec;
     }
     cout << endl;
   }
@@ -84,16 +92,12 @@ private:
 
 void test() {
   Circle circle{256,""};
-  circle.sparse_tie();
   circle.hashify();
   Circle circl{256,"AoC 2017"};
-  circl.sparse_tie();
   circl.hashify();
   Circle circ{256,"1,2,3"};
-  circ.sparse_tie();
   circ.hashify();
   Circle cir{256,"1,2,4"};
-  cir.sparse_tie();
   cir.hashify();
 }
 
@@ -101,11 +105,11 @@ void solution2() {
   string input;
   cin >> input;
   Circle circle{256,"183,0,31,146,254,240,223,150,2,206,161,1,255,232,199,88"};
-  circle.sparse_tie();
   circle.hashify();
 }
 
 int main() {
+  test();
   solution2();
   return 0;
 }
