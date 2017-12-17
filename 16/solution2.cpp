@@ -16,13 +16,11 @@ public:
     // auto back = programs.end() - n;
     // iter_swap(front,back);
     rotate(programs.begin(), programs.end()-n, programs.end());
-    routine.push_back(0);
   }
 
   void exchange(string const& cmd) {
     auto [a,b] = split(cmd,"/");
     swap(programs[stoi(a)],programs[stoi(b)]);
-    routine.push_back(1);
   }
 
   void partner(string const& cmd) {
@@ -30,14 +28,26 @@ public:
     auto found_a = find(programs.begin(), programs.end(), a.front());
     auto found_b = find(programs.begin(), programs.end(), b.front());
     iter_swap(found_a,found_b);
-    routine.push_back(2);
   }
 
   void do_it_again(int again) {
     while(again--) {
+      if (again % 100 == 0)
+        cout << again << endl;
 
+      for (string const& cmd: routine)
+        perform(cmd);
     }
+  }
 
+  void perform(string const& cmd) {
+    if (cmd.front() == 's') spin(stoi(cmd.substr(1,cmd.size())));
+    else if (cmd.front() == 'x') exchange(cmd.substr(1,cmd.size()));
+    else if (cmd.front() == 'p') partner(cmd.substr(1,cmd.size()));
+  }
+
+  void add(string cmd) {
+    routine.push_back(cmd);
   }
 
   void print() {
@@ -49,7 +59,7 @@ public:
 
 private:
   vector<char> programs;
-  vector<int> routine;
+  vector<string> routine;
 
   pair<string,string> split(string const& source, string const& delimiter) {
     regex reg{"(.+)" + delimiter + "(.+)"};
@@ -63,9 +73,7 @@ void test() {
   string cmd;
   Dancers dancers{{'a','b','c','d','e'}};
   while (getline(cin, cmd, ',')) {
-    if (cmd.front() == 's') dancers.spin(stoi(cmd.substr(1,cmd.size())));
-    else if (cmd.front() == 'x') dancers.exchange(cmd.substr(1,cmd.size()));
-    else if (cmd.front() == 'p') dancers.partner(cmd.substr(1,cmd.size()));
+    dancers.add(cmd);
     dancers.print();
   }
 }
@@ -74,9 +82,7 @@ void solution2() {
   string cmd;
   Dancers dancers{{'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p'}};
   while (getline(cin, cmd, ',')) {
-    if (cmd.front() == 's') dancers.spin(stoi(cmd.substr(1,cmd.size())));
-    else if (cmd.front() == 'x') dancers.exchange(cmd.substr(1,cmd.size()));
-    else if (cmd.front() == 'p') dancers.partner(cmd.substr(1,cmd.size()));
+    dancers.add(cmd);
   }
   dancers.do_it_again(1000000000-1);
   dancers.print();
